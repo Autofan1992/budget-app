@@ -10,3 +10,5 @@ export type ExpenseType = {
     amount: number
     description: string
 }
+
+export type ExpensesModalType = 'addExpense' | 'viewExpenses'

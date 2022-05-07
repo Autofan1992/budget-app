@@ -1,6 +1,6 @@
 import { Button, Form, Modal } from 'react-bootstrap'
 import { Dispatch, FC, FormEvent, SetStateAction, useRef, useState } from 'react'
-import { useBudgets } from '../contexts/budgets-context'
+import { useBudgets } from '../../context/budgets-context'
 
 const AddBudgetModal: FC<PropsType> = ({ show, handleClose }) => {
     const [validated, setValidated] = useState(false)
@@ -10,19 +10,16 @@ const AddBudgetModal: FC<PropsType> = ({ show, handleClose }) => {
     const maxRef = useRef<HTMLInputElement>(null)
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        const form = e.currentTarget
+        e.preventDefault()
 
-        if (!form.checkValidity()) {
-            e.preventDefault()
+        if (!e.currentTarget.checkValidity()) {
             e.stopPropagation()
-        } else {
-            if (nameRef.current && maxRef.current) {
-                addBudget({
-                    name: nameRef.current.value,
-                    max: +maxRef.current.value
-                })
-                handleModalHide()
-            }
+        } else if (nameRef.current && maxRef.current) {
+            addBudget({
+                name: nameRef.current.value,
+                max: +maxRef.current.value
+            })
+            handleModalHide()
         }
 
         setValidated(true)
@@ -40,7 +37,8 @@ const AddBudgetModal: FC<PropsType> = ({ show, handleClose }) => {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="max">
                     <Form.Label>Maximum spending</Form.Label>
-                    <Form.Control type="number" ref={maxRef} min={1} step={0.01} placeholder='Type budget maximum' required/>
+                    <Form.Control type="number" ref={maxRef} min={1} step={0.01} placeholder="Type budget maximum"
+                                  required/>
                 </Form.Group>
                 <div className="text-end">
                     <Button variant="primary" type="submit">Add budget</Button>
