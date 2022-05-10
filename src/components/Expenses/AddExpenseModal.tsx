@@ -13,7 +13,7 @@ const AddExpenseModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) =
     const [validated, setValidated] = useState(false)
 
     useEffect(() => {
-        setBudgetName(selectedBudget.name)
+        setBudgetName(selectedBudget.title)
     }, [selectedBudget])
 
     const handleSelectedBudgetName = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -54,7 +54,7 @@ const AddExpenseModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) =
                     <Form.Label>Budget</Form.Label>
                     <Form.Select onChange={handleSelectedBudgetName} ref={budgetRefId} defaultValue={selectedBudget.id}>
                         <option value={UNCATEGORIZED_BUDGET_ID}>{UNCATEGORIZED_BUDGET_ID}</option>
-                        {budgets.map(budget => <option key={budget.id} value={budget.id}>{budget.name}</option>)}
+                        {budgets.map(budget => <option key={budget.id} value={budget.id}>{budget.title}</option>)}
                     </Form.Select>
                 </Form.Group>
                 <div className="text-end">

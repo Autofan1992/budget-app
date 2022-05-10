@@ -1,9 +1,9 @@
 import { Button, Card, Row, Stack } from 'react-bootstrap'
-import BudgetItem from './BudgetItem'
 import { FC } from 'react'
 import { UNCATEGORIZED_BUDGET_ID, useBudgets } from '../../context/budgets-context'
 import { BudgetType, ExpensesModalType } from '../../types/types'
 import { currencyFormatter } from '../../utils'
+import BudgetItemContainer from './BudgetItemContainer'
 
 const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
     const { budgets, getBudgetExpenses, totalBudgetAmount, totalExpensesAmount, getBudgetExpensesAmount } = useBudgets()
@@ -20,10 +20,10 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
             {budgets.map(budget => {
                 const amount = getBudgetExpenses(budget.id).reduce((acc, expense) => acc + expense.amount, 0)
 
-                return <BudgetItem
+                return <BudgetItemContainer
                     key={budget.id}
                     id={budget.id}
-                    name={budget.name} amount={amount}
+                    title={budget.title} amount={amount}
                     max={budget.max}
                     getProgressBarVariant={getProgressBarVariant}
                     showExpensesModal={showExpensesModal}
@@ -38,7 +38,7 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
                 </Card.Title>
                 <Stack direction="horizontal" className="justify-content-end gap-4">
                     <Button variant="outline-secondary" onClick={() => showExpensesModal({
-                        name: UNCATEGORIZED_BUDGET_ID,
+                        title: UNCATEGORIZED_BUDGET_ID,
                         id: UNCATEGORIZED_BUDGET_ID,
                         max: 0
                     }, 'viewExpenses')}
@@ -65,5 +65,5 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
 export default BudgetsList
 
 type PropsType = {
-    showExpensesModal: ({ name, id, max }: BudgetType, modalToShow: ExpensesModalType) => void
+    showExpensesModal: ({ title, id, max }: BudgetType, modalToShow: ExpensesModalType) => void
 }

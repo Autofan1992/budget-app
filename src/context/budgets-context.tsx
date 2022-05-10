@@ -1,13 +1,18 @@
-import { createContext, FC, ReactNode, useContext } from 'react'
+import { createContext, Dispatch, FC, ReactNode, SetStateAction, useContext, useState } from 'react'
 import { BudgetType, ExpenseType } from '../types/types'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { v4 as createId } from 'uuid'
 
 export const UNCATEGORIZED_BUDGET_ID = 'Uncategorized'
 
-export const BudgetsProvider: FC<ReactNode> = (children) => {
+const BudgetsContext = createContext({} as ContextType)
+
+export const useBudgets = () => useContext(BudgetsContext)
+
+export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [budgets, setBudgets] = useLocalStorage<Array<BudgetType>>('budgets', [])
     const [expenses, setExpenses] = useLocalStorage<Array<ExpenseType>>('expenses', [])
+    const [error, setError] = useState(null as string | null)
     const getBudgetExpenses = (budgetId: string) => expenses.filter((expense) => expense.budgetId === budgetId)
     const getBudgetExpensesAmount = (budgetId: string) => getBudgetExpenses(budgetId).reduce((acc, expense) => acc + expense.amount, 0)
     const totalExpensesAmount = expenses.reduce((acc, expense) => acc + expense.amount, 0)
@@ -22,19 +27,23 @@ export const BudgetsProvider: FC<ReactNode> = (children) => {
         }])
     }
 
-    const addBudget = ({ name, max }: Omit<BudgetType, 'id'>) => {
+    const addBudget = ({ title, max }: Omit<BudgetType, 'id'>) => {
         setBudgets(prevState => {
-            if (prevState.find(budget => budget.name === name)) return prevState
+            if (prevState.find(budget => budget.title === title)) return prevState
 
-            return [...prevState, { id: createId(), name, max }]
+            return [{ id: createId(), title, max }, ...prevState]
         })
     }
 
-    const editBudget = ({ name, max, id }: BudgetType) => {
+    const editBudget = ({ title, max, id }: BudgetType) => {
         setBudgets(prevState => prevState.map(budget => {
             if (budget.id === id) {
-                budget.name = name
-                budget.max = max
+                if (!budgets.find(budget => budget.title === title)) {
+                    budget.title = title
+                    budget.max = max
+                } else {
+                    setError('Budget with the same title already exists')
+                }
             }
             return budget
         }))
@@ -86,14 +95,13 @@ export const BudgetsProvider: FC<ReactNode> = (children) => {
         addBudget,
         editBudget,
         deleteBudget,
-        deleteExpense
+        deleteExpense,
+        error,
+        setError
     }}>
         {children}
     </BudgetsContext.Provider>
 }
-const BudgetsContext = createContext({} as ContextType)
-
-export const useBudgets = () => useContext(BudgetsContext)
 
 type ContextType = {
     budgets: Array<BudgetType>
@@ -104,8 +112,10 @@ type ContextType = {
     totalExpensesAmount: number
     addExpense: ({ description, amount, budgetId }: Omit<ExpenseType, 'id'>) => void
     editExpense: ({ description, amount, id }: Omit<ExpenseType, 'budgetId'>) => void
-    addBudget: ({ name, max }: Omit<BudgetType, 'id'>) => void
-    editBudget: ({ name, max, id }: BudgetType) => void
+    addBudget: ({ title, max }: Omit<BudgetType, 'id'>) => void
+    editBudget: ({ title, max, id }: BudgetType) => void
     deleteBudget: (id: string) => void
     deleteExpense: (id: string, budgetId: string) => void
+    error: string | null
+    setError: Dispatch<SetStateAction<string | null>>
 }
