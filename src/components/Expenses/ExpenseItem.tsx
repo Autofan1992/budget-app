@@ -1,32 +1,30 @@
-import { Dispatch, RefObject, SetStateAction } from 'react'
-import { Button, Form, ListGroup } from 'react-bootstrap'
+import { useRef, useState } from 'react'
+import useOutsideClick from '../../hooks/useOutsideClick'
 import { ExpenseType } from '../../types/types'
 import { useBudgets } from '../../context/budgets-context'
+import { Button, Form, ListGroup } from 'react-bootstrap'
 import { currencyFormatter } from '../../utils'
 import PencilIcon from '../common/Icons/PencilIcon'
 import TrashIcon from '../common/Icons/TrashIcon'
 
-interface PropsType extends ExpenseType {
-    listItemRef: RefObject<HTMLAnchorElement>
-    handleExpenseDesc: (description: string) => void
-    handleExpenseAmount: (amount: number) => void
-    editMode: boolean
-    setEditMode: Dispatch<SetStateAction<boolean>>
-}
+const ExpenseItem = ({ description, amount, id, budgetId }: ExpenseType) => {
+    const { editExpense, deleteExpense } = useBudgets()
+    const listItemRef = useRef<HTMLAnchorElement>(null)
+    const [editMode, setEditMode] = useState(false)
 
-const ExpenseItem = (
-    {
+    useOutsideClick(listItemRef, setEditMode)
+
+    const handleExpenseDesc = (description: string) => editExpense({
         description,
         amount,
-        id,
-        budgetId,
-        listItemRef,
-        handleExpenseDesc,
-        handleExpenseAmount,
-        editMode,
-        setEditMode
-    }: PropsType) => {
-    const { deleteExpense } = useBudgets()
+        id
+    })
+
+    const handleExpenseAmount = (amount: number) => editExpense({
+        description,
+        amount,
+        id
+    })
 
     return <ListGroup.Item ref={listItemRef}>
         <div className="d-flex align-items-end">

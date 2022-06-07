@@ -2,7 +2,7 @@ import { ListGroup, Modal } from 'react-bootstrap'
 import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useBudgets } from '../../context/budgets-context'
 import { BudgetType } from '../../types/types'
-import ExpenseItemContainer from './ExpenseItemContainer'
+import ExpenseItem from './ExpenseItem'
 
 const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) => {
     const handleModalHide = () => handleClose(false)
@@ -23,7 +23,7 @@ const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget })
         </Modal.Header>
         <Modal.Body>
             <ListGroup>
-                {budgetExpenses.map(expense => <ExpenseItemContainer
+                {budgetExpenses.map(expense => <ExpenseItem
                     key={expense.id}
                     budgetId={expense.budgetId}
                     id={expense.id}

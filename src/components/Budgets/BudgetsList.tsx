@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { UNCATEGORIZED_BUDGET_ID, useBudgets } from '../../context/budgets-context'
 import { BudgetType, ExpensesModalType } from '../../types/types'
 import { currencyFormatter } from '../../utils'
-import BudgetItemContainer from './BudgetItemContainer'
+import BudgetItem from './BudgetItem'
 
 const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
     const { budgets, getBudgetExpenses, totalBudgetAmount, totalExpensesAmount, getBudgetExpensesAmount } = useBudgets()
@@ -20,7 +20,7 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
             {budgets.map(budget => {
                 const amount = getBudgetExpenses(budget.id).reduce((acc, expense) => acc + expense.amount, 0)
 
-                return <BudgetItemContainer
+                return <BudgetItem
                     key={budget.id}
                     id={budget.id}
                     title={budget.title} amount={amount}
