@@ -5,17 +5,16 @@ import { BudgetType } from '../../types/types'
 import ExpenseItem from './ExpenseItem'
 
 const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) => {
-    const handleModalHide = () => handleClose(false)
     const { getBudgetExpenses } = useBudgets()
     const [selectedBudgetName, setBudgetName] = useState<string>()
     const budgetExpenses = getBudgetExpenses(selectedBudget.id)
 
     useEffect(() => {
         setBudgetName(selectedBudget.title)
-        if (budgetExpenses.length < 1) handleModalHide()
-    }, [selectedBudget, budgetExpenses, handleModalHide])
+        if (budgetExpenses.length < 1) handleClose(false)
+    }, [selectedBudget, budgetExpenses, handleClose])
 
-    return <Modal show={show} onHide={handleModalHide}>
+    return <Modal show={show} onHide={() => handleClose(false)}>
         <Modal.Header closeButton>
             <Modal.Title>
                 {selectedBudgetName + ' budget expenses'}
