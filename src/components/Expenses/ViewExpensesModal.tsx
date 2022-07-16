@@ -13,7 +13,7 @@ const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget })
     useEffect(() => {
         setBudgetName(selectedBudget.title)
         if (budgetExpenses.length < 1) handleModalHide()
-    }, [selectedBudget, budgetExpenses])
+    }, [selectedBudget, budgetExpenses, handleModalHide])
 
     return <Modal show={show} onHide={handleModalHide}>
         <Modal.Header closeButton>
