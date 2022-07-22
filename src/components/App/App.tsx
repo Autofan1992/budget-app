@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Button, Container, Stack } from 'react-bootstrap'
+import { Button, Col, Container, Row, Stack } from 'react-bootstrap'
 import BudgetsList from '../Budgets/BudgetsList'
 import { UNCATEGORIZED_BUDGET_ID } from '../../context/budgets-context'
 import AddBudgetModal from '../Budgets/AddBudgetModal'
@@ -27,24 +27,28 @@ const App: FC = () => {
     return <div className="wrapper py-3 py-md-4 py-lg-5">
         <ErrorToast/>
         <Container className="d-flex flex-column">
-            <Stack gap={2} direction="horizontal" className="mb-5 gap-4">
-                <h1>Budgets</h1>
-                <Button variant="primary ms-auto" onClick={() => setShowBudgetModal(true)}>Add Budget</Button>
-                <Button variant="outline-primary" onClick={() => handleExpensesModalShow({
-                    title: UNCATEGORIZED_BUDGET_ID,
-                    id: UNCATEGORIZED_BUDGET_ID,
-                    max: 0
-                }, 'addExpense')}>Add Expense</Button>
-            </Stack>
-            <BudgetsList showExpensesModal={handleExpensesModalShow}/>
-            <AddBudgetModal
-                show={showAddBudgetModal} handleClose={setShowBudgetModal}/>
-            <AddExpenseModal
-                show={showAddExpenseModal} selectedBudget={selectedBudget}
-                handleClose={setShowAddExpenseModal}/>
-            <ViewExpensesModal
-                show={showViewExpensesModal} selectedBudget={selectedBudget}
-                handleClose={setShowViewExpensesModal}/>
+            <Row className='justify-content-center'>
+                <Col xl={10} xxl={9}>
+                    <Stack gap={2} direction="horizontal" className="mb-5">
+                        <h1>Budgets</h1>
+                        <Button variant="primary ms-auto" onClick={() => setShowBudgetModal(true)}>Add Budget</Button>
+                        <Button variant="outline-primary" onClick={() => handleExpensesModalShow({
+                            title: UNCATEGORIZED_BUDGET_ID,
+                            id: UNCATEGORIZED_BUDGET_ID,
+                            max: 0
+                        }, 'addExpense')}>Add Expense</Button>
+                    </Stack>
+                    <BudgetsList showExpensesModal={handleExpensesModalShow}/>
+                    <AddBudgetModal
+                        show={showAddBudgetModal} handleClose={setShowBudgetModal}/>
+                    <AddExpenseModal
+                        show={showAddExpenseModal} selectedBudget={selectedBudget}
+                        handleClose={setShowAddExpenseModal}/>
+                    <ViewExpensesModal
+                        show={showViewExpensesModal} selectedBudget={selectedBudget}
+                        handleClose={setShowViewExpensesModal}/>
+                </Col>
+            </Row>
         </Container>
     </div>
 }
