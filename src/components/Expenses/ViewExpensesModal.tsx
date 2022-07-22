@@ -17,7 +17,7 @@ const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget })
     return <Modal show={show} onHide={() => handleClose(false)}>
         <Modal.Header closeButton>
             <Modal.Title>
-                {selectedBudgetName + ' budget expenses'}
+                {`${selectedBudgetName} expenses`}
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -37,7 +37,7 @@ const ViewExpensesModal: FC<PropsType> = ({ show, handleClose, selectedBudget })
 export default ViewExpensesModal
 
 type PropsType = {
-    selectedBudget: BudgetType
+    selectedBudget: Omit<BudgetType, 'max'>
     show: boolean
     handleClose: Dispatch<SetStateAction<boolean>>
 }

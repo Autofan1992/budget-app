@@ -50,9 +50,9 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
             <Card
                 className={'mt-4 ' + (totalExpensesAmount > totalBudgetAmount ? 'bg-danger bg-opacity-10' : 'bg-light')}>
                 <Card.Body>
-                    <Card.Title className="d-flex align-items-baseline justify-content-between">
+                    <Card.Title className="d-md-flex align-items-baseline justify-content-between">
                         <h4>Total expenses</h4>
-                        <p className="ms-2 d-flex align-items-baseline">
+                        <p className="ms-md-2 d-flex justify-content-end align-items-baseline">
                             {currencyFormatter.format(totalExpensesAmount)}&nbsp;/&nbsp;
                             <span className="text-muted fs-6">{currencyFormatter.format(totalBudgetAmount)}</span>
                         </p>

@@ -62,7 +62,7 @@ const BudgetItem: FC<PropsType> = memo((
                                 : title}
                             </h3>
                         </Col>
-                        <Col className="order-3 order-lg-2">
+                        <Col xs={12} className="order-3 order-lg-2 col-lg">
                             <p className="d-flex align-items-baseline">
                                 {currencyFormatter.format(amount)}&nbsp;/&nbsp;
                                 <span className="text-muted fs-6">{editMode ?
@@ -71,7 +71,7 @@ const BudgetItem: FC<PropsType> = memo((
                                         defaultValue={max}
                                         type="number"
                                         min={0}
-                                        step={0.01}
+                                        step={0.1}
                                         onChange={(e) => handleBudgetMax(+e.target.value)}
                                     />
                                     : currencyFormatter.format(max)}

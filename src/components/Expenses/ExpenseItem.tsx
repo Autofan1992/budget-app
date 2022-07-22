@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 import useOutsideClick from '../../hooks/useOutsideClick'
 import { ExpenseType } from '../../types/types'
 import { useBudgets } from '../../context/budgets-context'
@@ -7,7 +7,7 @@ import { currencyFormatter } from '../../utils'
 import PencilIcon from '../common/Icons/PencilIcon'
 import TrashIcon from '../common/Icons/TrashIcon'
 
-const ExpenseItem = ({ description, amount, id, budgetId }: ExpenseType) => {
+const ExpenseItem = memo(({ description, amount, id, budgetId }: ExpenseType) => {
     const { editExpense, deleteExpense } = useBudgets()
     const listItemRef = useRef<HTMLAnchorElement>(null)
     const [editMode, setEditMode] = useState(false)
@@ -28,20 +28,22 @@ const ExpenseItem = ({ description, amount, id, budgetId }: ExpenseType) => {
 
     return <ListGroup.Item ref={listItemRef}>
         <div className="d-flex align-items-end">
-            <h5 className="mb-0">{editMode ?
+            <h5 className="mb-0" style={{
+                wordBreak: 'break-word'
+            }}>{editMode ?
                 <Form.Control
                     plaintext
                     defaultValue={description}
                     onChange={(e) => handleExpenseDesc(e.target.value)}
                 />
                 : description}</h5>
-            <h6 className="ms-3 mb-0">{editMode ?
+            <h6 className="ms-3 mb-0 mx-2">{editMode ?
                 <Form.Control
                     plaintext
                     defaultValue={amount}
                     type="number"
                     min={0}
-                    step={0.01}
+                    step={0.1}
                     onChange={(e) => handleExpenseAmount(+e.target.value)}
                 />
                 : currencyFormatter.format(amount)}</h6>
@@ -53,6 +55,6 @@ const ExpenseItem = ({ description, amount, id, budgetId }: ExpenseType) => {
             </Button>
         </div>
     </ListGroup.Item>
-}
+})
 
 export default ExpenseItem

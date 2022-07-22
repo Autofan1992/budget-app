@@ -4,7 +4,6 @@ import { UNCATEGORIZED_BUDGET_ID, useBudgets } from '../../context/budgets-conte
 import { BudgetType, ExpenseType } from '../../types/types'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { Omit } from 'react-bootstrap/helpers'
 
 const expenseSchema = Yup.object().shape({
     description: Yup.string()
@@ -33,7 +32,7 @@ const AddExpenseModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) =
                     description: '',
                     amount: 0,
                     budgetId: selectedBudget.id,
-                } as Omit<ExpenseType, 'id'>}
+                } as ExpenseType}
                 onSubmit={({ budgetId, amount, description }, { resetForm, setSubmitting }) => {
                     addExpense({
                         description,
