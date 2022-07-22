@@ -1,3 +1,3 @@
 # Budget
 
-## App link : https://todo-list-app-8.netlify.app
+## App link : https://budget-app-8.netlify.app
