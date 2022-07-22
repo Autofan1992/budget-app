@@ -16,7 +16,7 @@ const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
     }
 
     return <div className="flex-grow-1 d-flex flex-column">
-        <Row className="g-4 flex-grow-1">
+        <Row className="g-3 flex-grow-1">
             {budgets.map(budget => {
                 const amount = getBudgetExpenses(budget.id).reduce((acc, expense) => acc + expense.amount, 0)
 

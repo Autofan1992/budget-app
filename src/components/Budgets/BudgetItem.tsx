@@ -51,8 +51,8 @@ const BudgetItem: FC<PropsType> = memo((
         <Card className={amount > max ? 'bg-danger bg-opacity-10' : 'bg-light'} ref={cardRef}>
             <Card.Body>
                 <Card.Title>
-                    <Row className='flex-lg-nowrap'>
-                        <Col className="order-lg-1">
+                    <Row>
+                        <Col xs={9} lg={10}>
                             <h3>{editMode ?
                                 <Form.Control
                                     plaintext
@@ -62,7 +62,12 @@ const BudgetItem: FC<PropsType> = memo((
                                 : title}
                             </h3>
                         </Col>
-                        <Col xs={12} className="order-3 order-lg-2 col-lg">
+                        <Col xs="auto" className="ms-auto">
+                            <Button variant="outline-primary" size="sm" onClick={() => setEditMode(true)}>
+                                <PencilIcon/>
+                            </Button>
+                        </Col>
+                        <Col xs={12}>
                             <p className="d-flex align-items-baseline">
                                 {currencyFormatter.format(amount)}&nbsp;/&nbsp;
                                 <span className="text-muted fs-6">{editMode ?
@@ -77,11 +82,6 @@ const BudgetItem: FC<PropsType> = memo((
                                     : currencyFormatter.format(max)}
                             </span>
                             </p>
-                        </Col>
-                        <Col xs="auto" className="order-lg-3">
-                            <Button variant="outline-primary" size="sm" onClick={() => setEditMode(true)}>
-                                <PencilIcon/>
-                            </Button>
                         </Col>
                     </Row>
                 </Card.Title>
