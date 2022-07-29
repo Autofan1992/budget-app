@@ -14,7 +14,14 @@ export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [expenses, setExpenses] = useLocalStorage<Array<ExpenseType>>('expenses', [])
     const [error, setError] = useState(null as string | null)
     const getBudgetExpenses = (budgetId: string) => expenses.filter((expense) => expense.budgetId === budgetId)
-    const getBudgetExpensesAmount = (budgetId: string) => getBudgetExpenses(budgetId).reduce((acc, expense) => acc + expense.amount, 0)
+    const getBudgetExpensesTotal = (budgetId: string) => getBudgetExpenses(budgetId).reduce((acc, expense) => acc + expense.amount, 0)
+
+    const getBudgetExpensesData = (budgetId: string, type: 'labels' | 'amounts') => getBudgetExpenses(budgetId).reduce((arr: Array<string | number>, expense) => {
+        if (type === 'labels') arr.push(expense.description)
+        if (type === 'amounts') arr.push(expense.amount)
+        return arr
+    }, [])
+
     const totalExpensesAmount = expenses.reduce((acc, expense) => acc + expense.amount, 0)
     const totalBudgetAmount = budgets.reduce((acc, budget) => acc + budget.max, 0)
 
@@ -88,7 +95,7 @@ export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         expenses,
         totalBudgetAmount,
         totalExpensesAmount,
-        getBudgetExpensesAmount,
+        getBudgetExpensesTotal,
         getBudgetExpenses,
         addExpense,
         editExpense,
@@ -97,7 +104,8 @@ export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
         deleteBudget,
         deleteExpense,
         error,
-        setError
+        setError,
+        getBudgetExpensesData
     }}>
         {children}
     </BudgetsContext.Provider>
@@ -107,7 +115,7 @@ type ContextType = {
     budgets: Array<BudgetType>
     expenses: Array<ExpenseType>
     getBudgetExpenses: (budgetId: string) => Array<ExpenseType>
-    getBudgetExpensesAmount: (budgetId: string) => number
+    getBudgetExpensesTotal: (budgetId: string) => number
     totalBudgetAmount: number
     totalExpensesAmount: number
     addExpense: ({ description, amount, budgetId }: Omit<ExpenseType, 'id'>) => void
@@ -118,4 +126,5 @@ type ContextType = {
     deleteExpense: (id: string, budgetId: string) => void
     error: string | null
     setError: Dispatch<SetStateAction<string | null>>
+    getBudgetExpensesData: (budgetId: string, data: 'labels' | 'amounts') => Array<string | number>
 }

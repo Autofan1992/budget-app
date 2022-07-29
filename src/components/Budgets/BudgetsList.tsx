@@ -6,8 +6,8 @@ import { currencyFormatter } from '../../utils'
 import BudgetItem from './BudgetItem'
 
 const BudgetsList: FC<PropsType> = ({ showExpensesModal }) => {
-    const { budgets, getBudgetExpenses, totalBudgetAmount, totalExpensesAmount, getBudgetExpensesAmount } = useBudgets()
-    const uncategorizedExpensesAmount = getBudgetExpensesAmount(UNCATEGORIZED_BUDGET_ID)
+    const { budgets, getBudgetExpenses, totalBudgetAmount, totalExpensesAmount, getBudgetExpensesTotal } = useBudgets()
+    const uncategorizedExpensesAmount = getBudgetExpensesTotal(UNCATEGORIZED_BUDGET_ID)
     const getProgressBarVariant = (amount: number, max: number) => {
         const ratio = amount / max
         if (ratio < .5) return 'primary'

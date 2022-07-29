@@ -5,8 +5,12 @@ import useOutsideClick from '../../hooks/useOutsideClick'
 import { Button, Card, Col, Form, ProgressBar, Row } from 'react-bootstrap'
 import { currencyFormatter } from '../../utils'
 import PencilIcon from '../common/Icons/PencilIcon'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
-interface PropsType extends BudgetType {
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+type PropsType = BudgetType & {
     amount: number
     getProgressBarVariant: (amount: number, max: number) => string
     showExpensesModal: ({ title, id, max }: BudgetType, modalToShow: ExpensesModalType) => void
@@ -22,8 +26,10 @@ const BudgetItem: FC<PropsType> = memo((
         showExpensesModal,
     }) => {
     const [editMode, setEditMode] = useState(false)
-    const { getBudgetExpensesAmount, editBudget, deleteBudget } = useBudgets()
-    const budgetExpensesAmount = getBudgetExpensesAmount(id)
+    const { getBudgetExpensesTotal, editBudget, deleteBudget, getBudgetExpensesData } = useBudgets()
+    const expensesTotal = getBudgetExpensesTotal(id)
+    const expensesAmounts = getBudgetExpensesData(id, 'amounts')
+    const expensesLabels = getBudgetExpensesData(id, 'labels')
     const cardRef = useRef<HTMLDivElement>(null)
     const progressBarVariant = getProgressBarVariant(amount, max)
 
@@ -46,6 +52,33 @@ const BudgetItem: FC<PropsType> = memo((
         id,
         max
     })
+
+    const data = {
+        labels: expensesLabels,
+        datasets: [
+            {
+                label: '# of Votes',
+                data: expensesAmounts,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
 
     return <Col md={6}>
         <Card className={amount > max ? 'bg-danger bg-opacity-10' : 'bg-light'} ref={cardRef}>
@@ -91,18 +124,23 @@ const BudgetItem: FC<PropsType> = memo((
                     min={0} max={max}
                     now={amount}
                 />
-                <Row className='g-3'>
+                <Row className='mb-4 justify-content-center'>
+                    <Col xs={8} lg={6}>
+                        <Pie data={data}  />
+                    </Col>
+                </Row>
+                <Row className="g-3">
                     <Col>
                         <Button
-                            className='w-100'
+                            className="w-100"
                             variant="outline-primary"
                             onClick={() => showExpensesModal({ title, id, max }, 'addExpense')}
                         >Add Expense</Button>
                     </Col>
-                    <Col xs={12} lg={4} className='order-3 order-lg-2'>
-                        {budgetExpensesAmount !== 0 && (
+                    <Col xs={12} lg={4} className="order-3 order-lg-2">
+                        {expensesTotal !== 0 && (
                             <Button
-                                className='w-100'
+                                className="w-100"
                                 variant="outline-secondary"
                                 onClick={() => handleModalShow()}
                             >View Expenses</Button>
