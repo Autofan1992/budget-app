@@ -33,6 +33,7 @@ const ExpenseItem = memo(({ description, amount, id, budgetId }: ExpenseType) =>
             }}>{editMode ?
                 <Form.Control
                     plaintext
+                    className="border ps-2"
                     defaultValue={description}
                     onChange={(e) => handleExpenseDesc(e.target.value)}
                 />
@@ -40,6 +41,7 @@ const ExpenseItem = memo(({ description, amount, id, budgetId }: ExpenseType) =>
             <h6 className="ms-3 mb-0 mx-2">{editMode ?
                 <Form.Control
                     plaintext
+                    className="border ps-2"
                     defaultValue={amount}
                     type="number"
                     min={0}

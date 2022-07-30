@@ -5,10 +5,10 @@ import useOutsideClick from '../../hooks/useOutsideClick'
 import { Button, Card, Col, Form, ProgressBar, Row } from 'react-bootstrap'
 import { currencyFormatter } from '../../utils'
 import PencilIcon from '../common/Icons/PencilIcon'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 type PropsType = BudgetType & {
     amount: number
@@ -32,6 +32,7 @@ const BudgetItem: FC<PropsType> = memo((
     const expensesLabels = getBudgetExpensesData(id, 'labels')
     const cardRef = useRef<HTMLDivElement>(null)
     const progressBarVariant = getProgressBarVariant(amount, max)
+    const [chartShow, setChartShow] = useState(false)
 
     useOutsideClick(cardRef, setEditMode)
 
@@ -57,7 +58,6 @@ const BudgetItem: FC<PropsType> = memo((
         labels: expensesLabels,
         datasets: [
             {
-                label: '# of Votes',
                 data: expensesAmounts,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -78,75 +78,91 @@ const BudgetItem: FC<PropsType> = memo((
                 borderWidth: 1,
             },
         ],
-    };
+    }
 
     return <Col md={6}>
-        <Card className={amount > max ? 'bg-danger bg-opacity-10' : 'bg-light'} ref={cardRef}>
-            <Card.Body>
-                <Card.Title>
-                    <Row>
-                        <Col xs={9} lg={10}>
-                            <h3>{editMode ?
-                                <Form.Control
-                                    plaintext
-                                    defaultValue={title}
-                                    onChange={(e) => handleBudgetTitle(e.target.value)}
-                                />
-                                : title}
-                            </h3>
-                        </Col>
-                        <Col xs="auto" className="ms-auto">
-                            <Button variant="outline-primary" size="sm" onClick={() => setEditMode(true)}>
-                                <PencilIcon/>
-                            </Button>
-                        </Col>
-                        <Col xs={12}>
-                            <p className="d-flex align-items-baseline">
-                                {currencyFormatter.format(amount)}&nbsp;/&nbsp;
-                                <span className="text-muted fs-6">{editMode ?
+        <Card className={`h-100 ${amount > max ? 'bg-danger bg-opacity-10' : 'bg-light'}`} ref={cardRef}>
+            <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                    <Card.Title>
+                        <Row>
+                            <Col xs={9} lg={10}>
+                                <h3>{editMode ?
                                     <Form.Control
                                         plaintext
-                                        defaultValue={max}
-                                        type="number"
-                                        min={0}
-                                        step={0.1}
-                                        onChange={(e) => handleBudgetMax(+e.target.value)}
+                                        className="border ps-2"
+                                        defaultValue={title}
+                                        onChange={(e) => handleBudgetTitle(e.target.value)}
                                     />
-                                    : currencyFormatter.format(max)}
+                                    : title}
+                                </h3>
+                            </Col>
+                            <Col xs="auto" className="ms-auto">
+                                <Button variant="outline-primary" size="sm" onClick={() => setEditMode(true)}>
+                                    <PencilIcon/>
+                                </Button>
+                            </Col>
+                            <Col xs={12}>
+                                <p className="d-flex align-items-baseline">
+                                    {currencyFormatter.format(amount)}&nbsp;/&nbsp;
+                                    <span className="text-muted fs-6">{editMode ?
+                                        <Form.Control
+                                            plaintext
+                                            defaultValue={max}
+                                            className="border ps-2"
+                                            type="number"
+                                            min={0}
+                                            step={0.1}
+                                            onChange={(e) => handleBudgetMax(+e.target.value)}
+                                        />
+                                        : currencyFormatter.format(max)}
                             </span>
-                            </p>
+                                </p>
+                            </Col>
+                        </Row>
+                    </Card.Title>
+                    <ProgressBar
+                        className="rounded-pill mb-4"
+                        variant={progressBarVariant}
+                        min={0} max={max}
+                        now={amount}
+                    />
+                </div>
+                {chartShow && (
+                    <Row className="justify-content-center mb-4">
+                        <Col xs={8} lg={6}>
+                            <Pie data={data}/>
                         </Col>
                     </Row>
-                </Card.Title>
-                <ProgressBar
-                    className="rounded-pill mb-4"
-                    variant={progressBarVariant}
-                    min={0} max={max}
-                    now={amount}
-                />
-                <Row className='mb-4 justify-content-center'>
-                    <Col xs={8} lg={6}>
-                        <Pie data={data}  />
-                    </Col>
-                </Row>
-                <Row className="g-3">
-                    <Col>
+                )}
+                <Row className="g-2">
+                    <Col lg={6}>
                         <Button
                             className="w-100"
                             variant="outline-primary"
                             onClick={() => showExpensesModal({ title, id, max }, 'addExpense')}
-                        >Add Expense</Button>
+                        >Add expense</Button>
                     </Col>
-                    <Col xs={12} lg={4} className="order-3 order-lg-2">
-                        {expensesTotal !== 0 && (
+                    {expensesTotal !== 0 && (
+                        <Col xs={12} lg={6} className="order-3 order-lg-2">
                             <Button
                                 className="w-100"
                                 variant="outline-secondary"
                                 onClick={() => handleModalShow()}
-                            >View Expenses</Button>
-                        )}
-                    </Col>
-                    <Col>
+                            >View expenses</Button>
+                        </Col>
+                    )}
+                    {expensesTotal !== 0 && (
+                        <Col xs={12} lg={6} className="order-3 order-lg-2">
+                            <Button
+                                className="w-100"
+                                variant="outline-info"
+                                onClick={() => setChartShow(!chartShow)}
+                            >{chartShow ? 'Hide chart' : 'Show chart'}
+                            </Button>
+                        </Col>
+                    )}
+                    <Col lg={6}>
                         <Button
                             className="w-100"
                             variant="danger"

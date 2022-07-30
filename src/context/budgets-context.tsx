@@ -26,17 +26,20 @@ export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const totalBudgetAmount = budgets.reduce((acc, budget) => acc + budget.max, 0)
 
     const addExpense = ({ description, amount, budgetId }: Omit<ExpenseType, 'id'>) => {
-        setExpenses(prevState => [...prevState, {
+        setExpenses(prevState => [{
             id: createId(),
             description,
             amount,
             budgetId
-        }])
+        }, ...prevState])
     }
 
     const addBudget = ({ title, max }: Omit<BudgetType, 'id'>) => {
         setBudgets(prevState => {
-            if (prevState.find(budget => budget.title === title)) return prevState
+            if (prevState.find(budget => budget.title === title)) {
+                setError('Budget with the same title already exists')
+                return prevState
+            }
 
             return [{ id: createId(), title, max }, ...prevState]
         })
@@ -45,12 +48,8 @@ export const BudgetsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const editBudget = ({ title, max, id }: BudgetType) => {
         setBudgets(prevState => prevState.map(budget => {
             if (budget.id === id) {
-                if (!budgets.find(budget => budget.title === title)) {
-                    budget.title = title
-                    budget.max = max
-                } else {
-                    setError('Budget with the same title already exists')
-                }
+                budget.title = title
+                budget.max = max
             }
             return budget
         }))

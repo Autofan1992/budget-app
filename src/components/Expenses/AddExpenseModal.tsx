@@ -49,7 +49,7 @@ const AddExpenseModal: FC<PropsType> = ({ show, handleClose, selectedBudget }) =
                         <Form.Label>Description</Form.Label>
                         <Form.Control
                             className={touched.description && errors.description ? 'is-invalid' : undefined}
-                            placeholder="Type budget description"
+                            placeholder="Type expense description"
                             onChange={handleChange}
                             value={values.description}
                             name="description"
